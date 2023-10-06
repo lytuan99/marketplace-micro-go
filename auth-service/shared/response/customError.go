@@ -25,9 +25,17 @@ func ResolveError(err error) any {
 func ResponseError(ctx *gin.Context, err error, code int, message string) {
 	var msg string
 
+	if code != 0 {
+		ctx.JSON(code, ResponseData{
+			Message: getMessage(code, message),
+			Code:    code,
+		})
+		return
+	}
+
 	if ErrorCode(err) == UniqueViolation {
 		code = http.StatusForbidden
-		msg = "Duplicate value"
+		msg = "Duplicate value" // TODO: update for each needed model: This ... already exists
 	}
 
 	if err == sql.ErrNoRows {
@@ -43,5 +51,21 @@ func ResponseError(ctx *gin.Context, err error, code int, message string) {
 		msg = message
 	}
 
-	ctx.JSON(code, gin.H{"error": msg})
+	ctx.JSON(code, ResponseData{
+		Message: msg,
+		Code:    code,
+	})
+}
+
+func getMessage(code int, defaultMsg string) string {
+	if defaultMsg != "" {
+		return defaultMsg
+	}
+
+	switch code {
+	case http.StatusUnauthorized:
+		return "Unauthorized"
+	default:
+		return "Internal server error"
+	}
 }

@@ -24,8 +24,8 @@ func NewServer(conf config.Config, store db.Store, logger zerolog.Logger) *Serve
 func (s *Server) Run(address string) {
 	router := gin.Default()
 
-	authHandlers := http.NewAuthHandlers(s.store, s.logger)
-	http.MapAuthRoutes(router.Group("/auth"), authHandlers)
+	authHandlers := http.NewAuthHandlers(s.conf, s.store, s.logger)
+	http.MapAuthRoutes(router.Group("api/v1/auth"), authHandlers, s.conf)
 
 	router.Run(address)
 }
