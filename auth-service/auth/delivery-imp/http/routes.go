@@ -8,4 +8,5 @@ import (
 
 func MapAuthRoutes(authGroup *gin.RouterGroup, h auth.Handlers) {
 	authGroup.POST("/login", h.Login)
+	authGroup.POST("/register", h.Register)
 }
