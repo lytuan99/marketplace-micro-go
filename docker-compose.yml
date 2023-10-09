@@ -1,0 +1,38 @@
+version: "3"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth_service
+      PGDATA: /data/postgres
+    volumes:
+       - postgres-micro:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - marketplace-micro
+    restart: unless-stopped
+  
+ 
+  # pgadmin:
+  #   links:
+  #   - postgres:postgres
+  #   container_name: pgadminif
+  #   image: dpage/pgadmin4
+  #   ports:
+  #   - "8080:80"
+  #   volumes:
+  #   - /data/pgadmin:/root/.pgadmin
+  #   env_file:
+  #   - docker.env
+  #   networks:
+  #   - postgres
+
+networks:
+  marketplace-micro:
+
+volumes:
+  postgres-micro:
